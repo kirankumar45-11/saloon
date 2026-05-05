@@ -262,3 +262,52 @@ a { text-decoration: none; }
     border-color: var(--gold);
     background: rgba(212,167,69,.06);
 }
+
+/* ── SLOTS ────────────────────────── */
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+.slot-item {
+    padding: 8px 5px;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 55px;
+}
+.slot-item:hover {
+    border-color: var(--gold);
+    background: rgba(212,167,69,0.05);
+}
+.slot-item.selected {
+    background: var(--gold);
+    color: var(--dark);
+    border-color: var(--gold);
+    box-shadow: 0 4px 10px rgba(212,167,69,0.3);
+}
+.slot-item.booked {
+    background: #f0f0f0;
+    color: #bbb;
+    cursor: not-allowed;
+    border-color: #eee;
+    text-decoration: line-through;
+}
+.seat-count {
+    font-size: 0.65rem;
+    font-weight: 500;
+    margin-top: 2px;
+    opacity: 0.8;
+}
+.slot-item.selected .seat-count {
+    opacity: 1;
+}

@@ -32,4 +32,5 @@ urlpatterns = [
     # APIs
     path('api/services/<int:category_id>/', views.get_services, name='get_services'),
     path('api/availability/<int:expert_id>/', views.get_expert_availability, name='get_expert_availability'),
+    path('api/availability/all/', views.get_salon_availability, name='get_salon_availability'),
 ]

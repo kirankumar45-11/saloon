@@ -38,24 +38,79 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ── Show booked times for selected expert + date ──
+    // ── Show available slots for selected expert + date ──
     const expertSelect = document.getElementById('id_expert');
     const dateInput    = document.getElementById('id_date');
-    const bookedInfo   = document.getElementById('booked_times');
+    const slotsContainer = document.getElementById('slots_container');
+    const timeInput    = document.getElementById('id_time');
+    const timeDisplay  = document.getElementById('selected_time_display');
 
     function loadAvailability() {
-        if (!expertSelect || !dateInput || !bookedInfo) return;
-        const expertId = expertSelect.value;
+        if (!slotsContainer || !dateInput) return;
+        
+        const expertId = expertSelect ? expertSelect.value : null;
         const dateVal  = dateInput.value;
-        if (!expertId || !dateVal) { bookedInfo.innerHTML = ''; return; }
+        
+        if (!dateVal) { 
+            slotsContainer.innerHTML = '<p class="text-muted small italic">Please select a date to see available slots.</p>';
+            return; 
+        }
 
-        fetch('/api/availability/' + expertId + '/?date=' + dateVal)
+        slotsContainer.innerHTML = '<div class="text-muted small"><i class="fa-solid fa-spinner fa-spin me-1"></i>Fetching slots...</div>';
+
+        // Choose API based on whether an expert is selected
+        let url = expertId 
+            ? '/api/availability/' + expertId + '/?date=' + dateVal
+            : '/api/availability/all/?date=' + dateVal;
+
+        fetch(url)
             .then(r => r.json())
-            .then(times => {
-                if (times.length === 0) {
-                    bookedInfo.innerHTML = '<span class="text-success"><i class="fa-solid fa-circle-check me-1"></i>All times available</span>';
+            .then(slots => {
+                slotsContainer.innerHTML = '';
+                if (slots.length === 0) {
+                    slotsContainer.innerHTML = '<p class="text-danger small">No slots available for this date.</p>';
                 } else {
-                    bookedInfo.innerHTML = '<span class="text-danger"><i class="fa-solid fa-clock me-1"></i>Already booked: ' + times.join(', ') + '</span>';
+                    slots.forEach(slot => {
+                        const btn = document.createElement('div');
+                        btn.className = 'slot-item' + (slot.available ? '' : ' booked');
+                        
+                        // Time label
+                        const timeLabel = document.createElement('span');
+                        timeLabel.textContent = slot.time;
+                        btn.appendChild(timeLabel);
+
+                        // Seat count label (if available)
+                        if (slot.available_seats !== undefined) {
+                            const seatLabel = document.createElement('span');
+                            seatLabel.className = 'seat-count';
+                            seatLabel.textContent = slot.available_seats + ' seats free';
+                            btn.appendChild(seatLabel);
+                        }
+                        
+                        if (slot.available) {
+                            btn.addEventListener('click', function() {
+                                // Clear previous selection
+                                document.querySelectorAll('.slot-item').forEach(s => s.classList.remove('selected'));
+                                // Set current selection
+                                btn.classList.add('selected');
+                                timeInput.value = slot.time;
+                                if (timeDisplay) timeDisplay.textContent = 'Selected: ' + slot.time;
+                                
+                                // If no expert was selected, maybe prompt or auto-assign?
+                                // For now, we'll let the user pick an expert if they haven't.
+                                if (!expertId) {
+                                    // Optionally highlight that an expert still needs to be picked
+                                    if (expertSelect) {
+                                        expertSelect.classList.add('is-invalid');
+                                        setTimeout(() => expertSelect.classList.remove('is-invalid'), 2000);
+                                    }
+                                }
+                            });
+                        } else {
+                            btn.title = 'Fully booked';
+                        }
+                        slotsContainer.appendChild(btn);
+                    });
                 }
             });
     }

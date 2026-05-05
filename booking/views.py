@@ -241,14 +241,79 @@ def get_services(request, category_id):
 
 
 def get_expert_availability(request, expert_id):
-    """Return booked slots for a given expert on a specific date."""
+    """Return all time slots for a given expert on a specific date with availability status."""
     req_date = request.GET.get('date')
     if not req_date:
         return JsonResponse([], safe=False)
+    
+    # Get booked times
     booked = Appointment.objects.filter(
         expert_id=expert_id, date=req_date, status__in=['PENDING', 'ACCEPTED']
     ).values_list('time', flat=True)
-    return JsonResponse([t.strftime('%H:%M') for t in booked], safe=False)
+    booked_strings = [t.strftime('%H:%M') for t in booked]
+    
+    # Define slots (e.g., 09:00 to 18:00 every 30 mins)
+    slots = []
+    import datetime
+    start_time = datetime.time(9, 0)
+    end_time = datetime.time(18, 0)
+    current = datetime.datetime.combine(datetime.date.today(), start_time)
+    
+    while current.time() <= end_time:
+        t_str = current.strftime('%H:%M')
+        slots.append({
+            'time': t_str,
+            'available': t_str not in booked_strings
+        })
+        current += datetime.timedelta(minutes=30)
+        
+    return JsonResponse(slots, safe=False)
+
+
+def get_salon_availability(request):
+    """Return all time slots with 'seat' (expert) counts for a given date."""
+    req_date = request.GET.get('date')
+    if not req_date:
+        return JsonResponse([], safe=False)
+    
+    # Get all active experts
+    experts = Expert.objects.filter(is_available=True)
+    total_experts = experts.count()
+    
+    # Get all bookings for that date
+    appointments = Appointment.objects.filter(
+        date=req_date, status__in=['PENDING', 'ACCEPTED']
+    )
+    
+    # Create a mapping of time -> list of booked expert IDs
+    bookings_by_time = {}
+    for appt in appointments:
+        t_str = appt.time.strftime('%H:%M')
+        if t_str not in bookings_by_time:
+            bookings_by_time[t_str] = []
+        bookings_by_time[t_str].append(appt.expert_id)
+    
+    # Define slots
+    slots = []
+    import datetime
+    start_time = datetime.time(9, 0)
+    end_time = datetime.time(18, 0)
+    current = datetime.datetime.combine(datetime.date.today(), start_time)
+    
+    while current.time() <= end_time:
+        t_str = current.strftime('%H:%M')
+        booked_count = len(bookings_by_time.get(t_str, []))
+        available_seats = total_experts - booked_count
+        
+        slots.append({
+            'time': t_str,
+            'total_seats': total_experts,
+            'available_seats': max(0, available_seats),
+            'available': available_seats > 0
+        })
+        current += datetime.timedelta(minutes=30)
+        
+    return JsonResponse(slots, safe=False)
 
 
 # ─────────────────────────────────────────────

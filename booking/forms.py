@@ -117,7 +117,7 @@ class AppointmentForm(forms.ModelForm):
         widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
     )
     time = forms.TimeField(
-        widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'})
+        widget=forms.HiddenInput(attrs={'id': 'id_time'})
     )
 
     class Meta:

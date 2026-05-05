@@ -37,18 +37,24 @@
 
                         <!-- Date & Time -->
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="id_date" class="form-label fw-bold">Date</label>
+                            <div class="col-md-12 mb-3">
+                                <label for="id_date" class="form-label fw-bold">Select Date</label>
                                 {{ form.date }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="id_time" class="form-label fw-bold">Time</label>
-                                {{ form.time }}
                             </div>
                         </div>
 
-                        <!-- Availability info -->
-                        <div id="booked_times" class="mb-3 small"></div>
+                        <!-- Time Slot Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold d-block">Available Time Slots</label>
+                            <div id="slots_container" class="slots-grid">
+                                <p class="text-muted small italic">Please select a date to see available seats.</p>
+                            </div>
+                            {{ form.time }}
+                            <div id="selected_time_display" class="mt-2 small fw-bold text-gold"></div>
+                        </div>
+
+                        <!-- Availability info (Legacy, can keep or remove) -->
+                        <div id="booked_times" class="mb-3 small d-none"></div>
 
                         <!-- Notes -->
                         <div class="mb-3">
