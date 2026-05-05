@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Glamour Salon{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="fa-solid fa-scissors me-2"></i>GLAMOUR SALON
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'expert_list' %}">Our Experts</a></li>
+
+                {% if user.is_authenticated %}
+                    {% if user.is_staff or request.resolver_match.url_name == 'expert_dashboard' %}
+                        {# Admin or expert #}
+                    {% endif %}
+
+                    {# Show expert dashboard link for experts, booking for customers #}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'book' %}">Book Now</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'customer_dashboard' %}"><i class="fa-solid fa-gauge me-1"></i>My Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'expert_dashboard' %}"><i class="fa-solid fa-user-tie me-1"></i>Expert Panel</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Login</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'customer_login' %}"><i class="fa-solid fa-user me-2"></i>Customer Login</a></li>
+                            <li><a class="dropdown-item" href="{% url 'expert_login' %}"><i class="fa-solid fa-user-tie me-2"></i>Expert Login</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="btn btn-gold ms-lg-2 dropdown-toggle" href="#" data-bs-toggle="dropdown">Sign Up</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'customer_register' %}"><i class="fa-solid fa-user-plus me-2"></i>Customer Sign Up</a></li>
+                            <li><a class="dropdown-item" href="{% url 'expert_register' %}"><i class="fa-solid fa-user-tie me-2"></i>Expert Sign Up</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- MESSAGES -->
+<div class="container mt-3">
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert">
+                {{ msg }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<!-- CONTENT -->
+<main>{% block content %}{% endblock %}</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="row text-center text-md-start">
+            <div class="col-md-4 mb-3">
+                <h5><i class="fa-solid fa-scissors me-2"></i>GLAMOUR SALON</h5>
+                <p>Premium grooming & beauty services since 2020.</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'expert_list' %}">Our Experts</a></li>
+                    <li><a href="{% url 'customer_register' %}">Sign Up</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5>Contact</h5>
+                <p><i class="fa-solid fa-phone me-2"></i>+1 234 567 8900</p>
+                <p><i class="fa-solid fa-envelope me-2"></i>info@glamoursalon.com</p>
+            </div>
+        </div>
+        <hr>
+        <p class="text-center mb-0">&copy; 2026 Glamour Salon. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

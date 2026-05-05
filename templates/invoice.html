@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Invoice #{{ bill.bill_number }} | Glamour Salon{% endblock %}
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="invoice-box">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <div class="logo"><i class="fa-solid fa-scissors me-2"></i>GLAMOUR SALON</div>
+                    <small class="text-muted">123 Style Avenue, Fashion City</small>
+                </div>
+                <div class="text-end">
+                    <h4 class="mb-0">INVOICE</h4>
+                    <p class="text-muted mb-0">#{{ bill.bill_number }}</p>
+                    <small class="text-muted">{{ bill.created_at|date:"M d, Y" }}</small>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Customer & Expert Info -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Bill To</h6>
+                    <p class="mb-0">{{ payment.appointment.customer.get_full_name }}</p>
+                    <p class="text-muted mb-0">{{ payment.appointment.customer.email }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h6 class="fw-bold">Expert</h6>
+                    <p class="mb-0">{{ payment.appointment.expert }}</p>
+                    <p class="text-muted mb-0">{{ payment.appointment.expert.specialization }}</p>
+                </div>
+            </div>
+
+            <!-- Service Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ payment.appointment.service.name }}</td>
+                        <td>{{ payment.appointment.date }}</td>
+                        <td>{{ payment.appointment.time }}</td>
+                        <td class="text-end">${{ payment.total_amount }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Totals -->
+            <div class="text-end mt-4">
+                <p class="mb-1">Total: <strong>${{ payment.total_amount }}</strong></p>
+                <p class="mb-1">Paid: <strong>${{ payment.paid_amount }}</strong></p>
+                {% if payment.payment_type == 'ADVANCE' %}
+                    <p class="mb-1 text-muted">Balance Due: <strong>${{ payment.total_amount|floatformat:2 }}</strong></p>
+                {% endif %}
+                <p class="mb-1">Method: {{ payment.method }}</p>
+                <p class="mb-0">Transaction ID: <code>{{ payment.transaction_id }}</code></p>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between align-items-center no-print">
+                <a href="{% url 'customer_dashboard' %}" class="btn btn-outline-gold"><i class="fa-solid fa-arrow-left me-1"></i>Back to Dashboard</a>
+                <button id="print_invoice" class="btn btn-gold"><i class="fa-solid fa-print me-1"></i>Print Bill</button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

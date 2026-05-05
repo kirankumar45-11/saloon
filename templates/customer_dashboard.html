@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard | Glamour Salon{% endblock %}
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar-card text-center">
+                    <div class="avatar-circle mx-auto mb-3">{{ user.first_name|make_list|first|upper|default:"U" }}</div>
+                    <h5>{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="text-muted small">{{ user.email }}</p>
+                    <hr>
+                    <a href="{% url 'customer_profile' %}" class="btn btn-outline-secondary btn-sm w-100 mb-2"><i class="fa-solid fa-user-pen me-1"></i>Edit Profile</a>
+                    <a href="{% url 'book' %}" class="btn btn-gold btn-sm w-100"><i class="fa-solid fa-plus me-1"></i>New Booking</a>
+                </div>
+            </div>
+
+            <!-- Appointments -->
+            <div class="col-lg-9">
+                <div class="card p-4">
+                    <h3 class="mb-4">My Appointments</h3>
+                    {% if appointments %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Date & Time</th>
+                                    <th>Service</th>
+                                    <th>Expert</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in appointments %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">{{ a.date }}</div>
+                                        <small class="text-muted">{{ a.time }}</small>
+                                    </td>
+                                    <td>{{ a.service.name }}<br><small class="text-muted">${{ a.service.price }}</small></td>
+                                    <td>{{ a.expert }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ a.status|lower }}">{{ a.get_status_display }}</span>
+                                    </td>
+                                    <td>
+                                        {% if a.status == 'ACCEPTED' and not a.payment %}
+                                            <a href="{% url 'payment' a.pk %}" class="btn btn-gold btn-sm">Pay Now</a>
+                                        {% elif a.payment and a.payment.status == 'COMPLETED' %}
+                                            <a href="{% url 'invoice' a.payment.pk %}" class="btn btn-outline-gold btn-sm">Invoice</a>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fa-regular fa-calendar-xmark fa-3x text-muted mb-3"></i>
+                        <h5>No appointments yet</h5>
+                        <a href="{% url 'book' %}" class="btn btn-gold mt-2">Book Now</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

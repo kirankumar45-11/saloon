@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Payment | Glamour Salon{% endblock %}
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card p-4 p-md-5">
+                    <h2 class="section-title mb-4">Complete Payment</h2>
+
+                    <!-- Booking Summary -->
+                    <div class="bg-light rounded p-3 mb-4">
+                        <h6 class="fw-bold mb-3"><i class="fa-solid fa-receipt me-2 text-warning"></i>Booking Summary</h6>
+                        <table class="table table-borderless mb-0">
+                            <tr><td class="text-muted">Service</td><td class="fw-bold">{{ appointment.service.name }}</td></tr>
+                            <tr><td class="text-muted">Expert</td><td>{{ appointment.expert }}</td></tr>
+                            <tr><td class="text-muted">Date & Time</td><td>{{ appointment.date }} at {{ appointment.time }}</td></tr>
+                            <tr><td class="text-muted">Total Amount</td><td class="fw-bold fs-5" style="color:var(--gold);">${{ appointment.service.price }}</td></tr>
+                        </table>
+                    </div>
+
+                    <!-- Payment Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <h6 class="fw-bold mb-3">Choose Payment Option</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-6">
+                                <div class="payment-option selected" onclick="this.querySelector('input').checked=true">
+                                    <input type="radio" name="payment_type" value="FULL" checked class="d-none">
+                                    <i class="fa-solid fa-money-bill-wave fa-2x mb-2" style="color:var(--gold);"></i>
+                                    <h6 class="mb-0">Pay Full</h6>
+                                    <small class="text-muted">${{ appointment.service.price }}</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="payment-option" onclick="this.querySelector('input').checked=true">
+                                    <input type="radio" name="payment_type" value="ADVANCE" class="d-none">
+                                    <i class="fa-solid fa-hand-holding-dollar fa-2x mb-2" style="color:var(--gold);"></i>
+                                    <h6 class="mb-0">Pay Advance</h6>
+                                    <small class="text-muted">50% — ${% widthratio appointment.service.price 2 1 %}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold mb-3">Payment Method</h6>
+                        <div class="mb-4">
+                            <select name="method" class="form-select">
+                                <option value="Card">Credit / Debit Card</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Cash">Cash on Visit</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-gold btn-lg"><i class="fa-solid fa-lock me-2"></i>Pay Securely</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

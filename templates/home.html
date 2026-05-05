@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home | Glamour Salon{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero" style="background: linear-gradient(rgba(15,15,30,.82), rgba(15,15,30,.82)), url('{% static 'images/hero_salon.png' %}') center/cover no-repeat;">
+    <div class="container">
+        <h1>Elevate Your Style</h1>
+        <p class="lead mb-4">Book appointments with top-rated salon experts. Haircuts, spa, coloring &amp; more.</p>
+        <a href="{% url 'book' %}" class="btn btn-gold btn-lg me-2">Book Appointment</a>
+        <a href="{% url 'expert_register' %}" class="btn btn-outline-gold btn-lg">Join as Expert</a>
+    </div>
+</section>
+
+<!-- SERVICES -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Our Services</h2>
+        <div class="row g-4">
+            {% for cat in categories %}
+            <div class="col-md-4">
+                <div class="card h-100 overflow-hidden">
+                    {% if cat.image %}
+                        <img src="{% static 'images/' %}{{ cat.image }}" class="card-img-top" alt="{{ cat.name }}" style="height:220px;object-fit:cover;">
+                    {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center" style="height:220px;background:linear-gradient(135deg,#1a1a2e,#2d2d52);">
+                            <i class="fa-solid {{ cat.icon|default:'fa-spa' }}" style="font-size:4rem;color:var(--gold);"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h4>{{ cat.name }}</h4>
+                        <p class="text-muted">{{ cat.description }}</p>
+                        <a href="{% url 'book' %}" class="btn btn-outline-gold mt-2">Book Now</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted">Services coming soon.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- EXPERTS PREVIEW -->
+{% if experts %}
+<section class="py-5" style="background:#fff;">
+    <div class="container">
+        <h2 class="section-title">Meet Our Experts</h2>
+        <div class="row g-4">
+            {% for e in experts %}
+            <div class="col-md-4">
+                <div class="card h-100">
+                    {% if e.static_image %}
+                        <img src="{% static 'images/' %}{{ e.static_image }}" class="card-img-top" alt="{{ e }}" style="height:260px;object-fit:cover;">
+                    {% elif e.photo %}
+                        <img src="{{ e.photo.url }}" class="card-img-top" alt="{{ e }}" style="height:260px;object-fit:cover;">
+                    {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center" style="height:260px;background:linear-gradient(135deg,#1a1a2e,#2d2d52);">
+                            <span style="font-size:4rem;color:var(--gold);">{{ e.user.first_name|make_list|first|upper }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5>{{ e }}</h5>
+                        <p class="text-muted mb-1"><i class="fa-solid fa-star text-warning me-1"></i>{{ e.experience_years }} yrs experience</p>
+                        <p class="small text-muted">{{ e.specialization }}</p>
+                        <a href="{% url 'book' %}" class="btn btn-gold btn-sm">Book with {{ e.user.first_name }}</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4"><a href="{% url 'expert_list' %}" class="btn btn-outline-gold">View All Experts</a></div>
+    </div>
+</section>
+{% endif %}
+
+<!-- WHY US -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <div class="feature-icon mx-auto"><i class="fa-solid fa-calendar-check"></i></div>
+                <h5>Easy Booking</h5>
+                <p class="text-muted">Pick service, expert, date & time in minutes.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon mx-auto"><i class="fa-solid fa-shield-halved"></i></div>
+                <h5>Secure Payment</h5>
+                <p class="text-muted">Pay full or advance — simple & safe.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon mx-auto"><i class="fa-solid fa-receipt"></i></div>
+                <h5>Instant Invoice</h5>
+                <p class="text-muted">Get a printable bill after every booking.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

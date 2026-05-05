@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Expert Profile | Glamour Salon{% endblock %}
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card p-4 p-md-5">
+                    <h2 class="section-title mb-4">Edit Expert Profile</h2>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h5 class="fw-bold mb-3">Personal Details</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">First Name</label>
+                                {{ u_form.first_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Last Name</label>
+                                {{ u_form.last_name }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            {{ u_form.email }}
+                        </div>
+                        
+                        <h5 class="fw-bold mb-3 mt-4">Professional Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Phone</label>
+                                {{ p_form.phone }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Years of Experience</label>
+                                {{ p_form.experience_years }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Specialization</label>
+                            {{ p_form.specialization }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Bio</label>
+                            {{ p_form.bio }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Profile Photo</label>
+                            {{ p_form.photo }}
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'expert_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button class="btn btn-gold px-5">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

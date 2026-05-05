@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Expert Login | Glamour Salon{% endblock %}
+{% block content %}
+<section class="py-5" style="background:#fff;min-height:80vh;">
+    <div class="container">
+        <div class="auth-card">
+            <div class="text-center">
+                <div class="auth-icon"><i class="fa-solid fa-user-tie"></i></div>
+                <h2>Expert Login</h2>
+                <p class="subtitle">Access your expert dashboard</p>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="Your username" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Your password" required>
+                </div>
+                <div class="d-grid mt-4">
+                    <button class="btn btn-gold btn-lg">Login</button>
+                </div>
+            </form>
+            <p class="text-center mt-3">New expert? <a href="{% url 'expert_register' %}" class="fw-bold" style="color:var(--gold);">Register here</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}

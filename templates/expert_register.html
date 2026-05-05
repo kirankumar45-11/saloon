@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Expert Registration | Glamour Salon{% endblock %}
+{% block content %}
+<section class="py-5" style="background:#fff;min-height:80vh;">
+    <div class="container">
+        <div class="auth-card" style="max-width:560px;">
+            <div class="text-center">
+                <div class="auth-icon"><i class="fa-solid fa-user-tie"></i></div>
+                <h2>Expert Registration</h2>
+                <p class="subtitle">Join our team of professionals</p>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for err in form.non_field_errors %}<p class="mb-0">{{ err }}</p>{% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">First Name</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}<small class="text-danger">{{ form.first_name.errors.0 }}</small>{% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Last Name</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}<small class="text-danger">{{ form.last_name.errors.0 }}</small>{% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<small class="text-danger">{{ form.email.errors.0 }}</small>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}<small class="text-danger">{{ form.username.errors.0 }}</small>{% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Password</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Confirm Password</label>
+                        {{ form.password_confirm }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Phone</label>
+                    {{ form.phone }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Experience (years)</label>
+                        {{ form.experience_years }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Specialization</label>
+                        {{ form.specialization }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Bio</label>
+                    {{ form.bio }}
+                </div>
+                <div class="d-grid mt-3">
+                    <button class="btn btn-gold btn-lg">Create Expert Account</button>
+                </div>
+            </form>
+            <p class="text-center mt-3">Already registered? <a href="{% url 'expert_login' %}" class="fw-bold" style="color:var(--gold);">Login here</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}

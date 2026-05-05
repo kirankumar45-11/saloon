@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Our Stylists | Glamour Salon{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title">Meet Our Experts</h2>
+        <div class="row">
+            {% for stylist in stylists %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    {% if stylist.photo %}
+                        <img src="{{ stylist.photo.url }}" class="card-img-top" alt="{{ stylist.name }}">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Default Stylist">
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h4 class="card-title text-warning">{{ stylist.name }}</h4>
+                        <p class="text-muted mb-2"><i class="fa-solid fa-star text-warning"></i> {{ stylist.experience_years }} Years Experience</p>
+                        <p class="card-text">{{ stylist.bio|truncatewords:20 }}</p>
+                        <a href="{% url 'book' %}?stylist={{ stylist.id }}" class="btn btn-primary mt-2">Book with {{ stylist.name }}</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No stylists currently available.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
